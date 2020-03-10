@@ -1,26 +1,23 @@
 const booksController = {};
-const Books = require('../models/books.model');
+const Books = require("../models/books.model");
 
 booksController.getAll = async (req, res) => {
   let books;
   try {
     let merged = {};
     const start = 0;
-    const length = 100;
-    books = await Books.paginate(
-      merged,
-      {
-        offset: parseInt(start),
-        limit: parseInt(length)
-      }
-    );
+    const length = 1000;
+    books = await Books.paginate(merged, {
+      offset: parseInt(start),
+      limit: parseInt(length)
+    });
     res.status(200).send({
       code: 200,
-      message: 'Successful',
+      message: "Successful",
       data: books
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -49,14 +46,13 @@ booksController.addBook = async (req, res) => {
     const result = await book.save();
     res.status(200).send({
       code: 200,
-      message: 'Book Added Successfully',
+      message: "Book Added Successfully"
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
-module.exports = booksController;
 
 booksController.getBooksByUserId = async (req, res) => {
   let book;
@@ -65,11 +61,11 @@ booksController.getBooksByUserId = async (req, res) => {
     book = await Books.find({ user_id: id });
     res.status(200).send({
       code: 200,
-      message: 'Successfully find books against this user_id',
+      message: "Successfully find books against this user_id",
       data: book
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -81,21 +77,20 @@ booksController.getSingleBook = async (req, res) => {
     book = await books.findOne({ _id: _id });
     res.status(200).send({
       code: 200,
-      message: 'Successful',
+      message: "Successful",
       data: book
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
-
 
 booksController.deleteBook = async (req, res) => {
   if (!req.params._id) {
     Fu;
     res.status(500).send({
-      message: 'ID missing'
+      message: "ID missing"
     });
   }
   try {
@@ -104,13 +99,13 @@ booksController.deleteBook = async (req, res) => {
     const result = await Books.findOneAndDelete({
       _id: _id
     });
-   
+
     res.status(200).send({
       code: 200,
-      message: 'Deleted Successfully'
+      message: "Deleted Successfully"
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -118,7 +113,7 @@ booksController.deleteBook = async (req, res) => {
 booksController.updateBook = async (req, res) => {
   if (!req.params._id) {
     res.status(500).send({
-      message: 'ID missing'
+      message: "ID missing"
     });
   }
   try {
@@ -126,7 +121,7 @@ booksController.updateBook = async (req, res) => {
     let updates = req.body;
     runUpdate(_id, updates, res);
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -150,22 +145,22 @@ async function runUpdate(_id, updates, res) {
       if (result.nModified == 1) {
         res.status(200).send({
           code: 200,
-          message: 'Updated Successfully'
+          message: "Updated Successfully"
         });
       } else if (result.upserted) {
         res.status(200).send({
           code: 200,
-          message: 'Created Successfully'
+          message: "Created Successfully"
         });
       } else {
         res.status(422).send({
           code: 422,
-          message: 'Unprocessible Entity'
+          message: "Unprocessible Entity"
         });
       }
     }
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 }
@@ -187,24 +182,24 @@ async function runUpdateById(id, updates, res) {
     if (result.nModified == 1) {
       res.status(200).send({
         code: 200,
-        message: 'Updated Successfully'
+        message: "Updated Successfully"
       });
     } else if (result.upserted) {
       res.status(200).send({
         code: 200,
-        message: 'Created Successfully'
+        message: "Created Successfully"
       });
     } else {
       {
         res.status(200).send({
           code: 200,
-          message: 'Task completed successfully'
+          message: "Task completed successfully"
         });
       }
     }
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 }
-
+module.exports = booksController;

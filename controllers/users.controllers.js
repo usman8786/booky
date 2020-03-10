@@ -1,8 +1,8 @@
 const usersController = {};
-const Users = require('../models/users.model');
-const path = require('path');
-const bcrypt = require('bcryptjs');
-const jsonwebtoken =  require('jsonwebtoken');
+const Users = require("../models/users.model");
+const path = require("path");
+const bcrypt = require("bcryptjs");
+const jsonwebtoken = require("jsonwebtoken");
 
 usersController.getAll = async (req, res) => {
   let users;
@@ -18,15 +18,14 @@ usersController.getAll = async (req, res) => {
         limit: parseInt(length)
       }
     );
- 
 
     res.status(200).send({
       code: 200,
-      message: 'Successful',
+      message: "Successful",
       data: users
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -38,11 +37,11 @@ usersController.getSingleUser = async (req, res) => {
     user = await Users.findOne({ _id: _id });
     res.status(200).send({
       code: 200,
-      message: 'Successful',
+      message: "Successful",
       data: user
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -63,73 +62,79 @@ usersController.registerUser = async (req, res) => {
     body.password = hash;
     const user = new Users(body);
     const result = await user.save();
-    const token = jsonwebtoken.sign({
-      data: result,
-      role: 'User'
-   }, process.env.JWT_KEY, { expiresIn: '7d' });
+    const token = jsonwebtoken.sign(
+      {
+        data: result,
+        role: "User"
+      },
+      process.env.JWT_KEY,
+      { expiresIn: "7d" }
+    );
 
     res.send({
-      message: 'Signup successful', token : token
+      message: "Signup successful",
+      token: token
     });
   } catch (ex) {
-    console.log('ex', ex);
-    if(ex.code===11000){
+    console.log("ex", ex);
+    if (ex.code === 11000) {
       res
-      .send({
-        message: 'This email has been registered already',
-      })
-      .status(500);
+        .send({
+          message: "This email has been registered already"
+        })
+        .status(500);
+    } else {
+      res
+        .send({
+          message: "Error",
+          detail: ex
+        })
+        .status(500);
     }
-    else {
-    res
-      .send({
-        message: 'Error',
-        detail: ex
-      })
-      .status(500);
-  }
   }
 };
 
-
 usersController.loginUser = async (req, res) => {
-    try {
-        const body = req.body;   
-        const email = body.email;
-        // lets check if email exists
-         const result = await Users.findOne({ email: email });
-        if (!result) {
-          // this means result is null
-          res.status(401).send({
-            Error: 'This user doesnot exists. Please signup first'
-          });
-        } else {
-          // email did exist
-          // so lets match password   
-          if ( bcrypt.compareSync(body.password, result.password)) {
-            //allow this user access             
-            result.password = undefined;
-            const token = jsonwebtoken.sign({
-               data: result,
-               role: 'User'
-            }, process.env.JWT_KEY, { expiresIn: '7d' });       
-            res.send({ message: 'Successfully Logged in', token: token });
-          }      
-          else {
-            console.log('password doesnot match');
-    
-            res.status(401).send({ message: 'Wrong email or Password' });
-          }
-        }
-      } catch (ex) {
-        console.log('ex', ex);
+  try {
+    const body = req.body;
+    const email = body.email;
+    // lets check if email exists
+    const result = await Users.findOne({ email: email });
+    if (!result) {
+      // this means result is null
+      res.status(401).send({
+        Error: "This user doesnot exists. Please signup first"
+      });
+    } else {
+      // email did exist
+      // so lets match password
+      if (bcrypt.compareSync(body.password, result.password)) {
+        //allow this user access
+        result.password = undefined;
+        const token = jsonwebtoken.sign(
+          {
+            data: result,
+            role: "User"
+          },
+          process.env.JWT_KEY,
+          { expiresIn: "7d" }
+        );
+        res.send({ message: "Successfully Logged in" });
+      } else {
+        console.log("password doesnot match");
+
+        res.status(401).send({ message: "Wrong email or Password" });
       }
+    }
+  } catch (ex) {
+    console.log("ex", ex);
+  }
 };
 
 usersController.getNextId = async (req, res) => {
   try {
     const max_result = await Users.aggregate([
-      { $group: { _id: null, max: { $max: '$id' } } }
+      { $group: { _id: null, max: { $max: "$id" } } }
     ]);
 
     let nextId;
@@ -145,7 +150,7 @@ usersController.getNextId = async (req, res) => {
     };
     res.status(200).send(data);
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -154,7 +159,7 @@ usersController.deleteUser = async (req, res) => {
   if (!req.params._id) {
     Fu;
     res.status(500).send({
-      message: 'ID missing'
+      message: "ID missing"
     });
   }
   try {
@@ -173,10 +178,10 @@ usersController.deleteUser = async (req, res) => {
     //     });
     res.status(200).send({
       code: 200,
-      message: 'Deleted Successfully'
+      message: "Deleted Successfully"
     });
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -190,14 +195,14 @@ usersController.uploadAvatar = async (req, res) => {
     };
     runUpdateById(req.params.id, updates, res);
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
 usersController.updateUser = async (req, res) => {
   if (!req.params._id) {
     res.status(500).send({
-      message: 'ID missing'
+      message: "ID missing"
     });
   }
   try {
@@ -205,7 +210,7 @@ usersController.updateUser = async (req, res) => {
     let updates = req.body;
     runUpdate(_id, updates, res);
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 };
@@ -229,22 +234,22 @@ async function runUpdate(_id, updates, res) {
       if (result.nModified == 1) {
         res.status(200).send({
           code: 200,
-          message: 'Updated Successfully'
+          message: "Updated Successfully"
         });
       } else if (result.upserted) {
         res.status(200).send({
           code: 200,
-          message: 'Created Successfully'
+          message: "Created Successfully"
         });
       } else {
         res.status(422).send({
           code: 422,
-          message: 'Unprocessible Entity'
+          message: "Unprocessible Entity"
         });
       }
     }
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 }
@@ -266,23 +271,23 @@ async function runUpdateById(id, updates, res) {
     if (result.nModified == 1) {
       res.status(200).send({
         code: 200,
-        message: 'Updated Successfully'
+        message: "Updated Successfully"
       });
     } else if (result.upserted) {
       res.status(200).send({
         code: 200,
-        message: 'Created Successfully'
+        message: "Created Successfully"
       });
     } else {
       {
         res.status(200).send({
           code: 200,
-          message: 'Task completed successfully'
+          message: "Task completed successfully"
         });
       }
     }
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
     return res.status(500).send(error);
   }
 }

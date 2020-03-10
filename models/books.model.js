@@ -1,29 +1,27 @@
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
+const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
 const Schema = mongoose.Schema;
 
 const Book = new Schema({
-     name: {
-        type: String
-    },
-     ibn: {
-        type: String,
-        unique: true,
-        sparse:true
-    },
-     author: {
-        type: String
-    },
-    image_url: {
-        type: String
-    },
-    is_deleted: {
-        type: Boolean,
-        default: false
-    },
-    user_id:{
-        type: String
-    }
+  name: {
+    type: String
+  },
+  cprice: {
+    type: Number
+  },
+  sprice: {
+    type: Number
+  },
+  image_url: {
+    type: String
+  },
+  is_deleted: {
+    type: Boolean,
+    default: false
+  },
+  user_id: {
+    type: String
+  }
 });
 
 Book.plugin(mongoosePaginate);
