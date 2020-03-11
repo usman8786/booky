@@ -119,7 +119,7 @@ usersController.loginUser = async (req, res) => {
           process.env.JWT_KEY,
           { expiresIn: "7d" }
         );
-        res.send({ message: "Successfully Logged in" });
+        res.send({ message: "Successfully Logged in", token });
       } else {
         console.log("password doesnot match");
 
