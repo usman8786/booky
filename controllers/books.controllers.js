@@ -45,7 +45,7 @@ booksController.addBook = async (req, res) => {
     const book = new Books(body);
     const result = await book.save();
     res.status(200).send({
-      result: result,
+      result: res,
       code: 200,
       message: "Book Added Successfully"
     });
