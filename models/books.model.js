@@ -3,9 +3,6 @@ const mongoosePaginate = require("mongoose-paginate");
 const Schema = mongoose.Schema;
 
 const Book = new Schema({
-  _id: {
-    type: Number
-  },
   name: {
     type: String
   },
