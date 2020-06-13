@@ -15,14 +15,14 @@ usersController.getAll = async (req, res) => {
       {
         password: 0,
         offset: parseInt(start),
-        limit: parseInt(length)
+        limit: parseInt(length),
       }
     );
 
     res.status(200).send({
       code: 200,
       message: "Successful",
-      data: users
+      data: users,
     });
   } catch (error) {
     console.log("error", error);
@@ -38,7 +38,7 @@ usersController.getSingleUser = async (req, res) => {
     res.status(200).send({
       code: 200,
       message: "Successful",
-      data: user
+      data: user,
     });
   } catch (error) {
     console.log("error", error);
@@ -65,7 +65,7 @@ usersController.registerUser = async (req, res) => {
     const token = jsonwebtoken.sign(
       {
         data: result,
-        role: "User"
+        role: "User",
       },
       process.env.JWT_KEY,
       { expiresIn: "7d" }
@@ -73,21 +73,21 @@ usersController.registerUser = async (req, res) => {
 
     res.send({
       message: "Signup successful",
-      token: token
+      token: token,
     });
   } catch (ex) {
     console.log("ex", ex);
     if (ex.code === 11000) {
       res
         .send({
-          message: "This email has been registered already"
+          message: "This email has been registered already",
         })
         .status(500);
     } else {
       res
         .send({
           message: "Error",
-          detail: ex
+          detail: ex,
         })
         .status(500);
     }
@@ -103,7 +103,7 @@ usersController.loginUser = async (req, res) => {
     if (!result) {
       // this means result is null
       res.status(401).send({
-        Error: "This user doesnot exists. Please signup first"
+        Error: "This user doesnot exists. Please signup first",
       });
     } else {
       // email did exist
@@ -114,7 +114,7 @@ usersController.loginUser = async (req, res) => {
         const token = jsonwebtoken.sign(
           {
             data: result,
-            role: "User"
+            role: "User",
           },
           process.env.JWT_KEY,
           { expiresIn: "7d" }
@@ -134,7 +134,7 @@ usersController.loginUser = async (req, res) => {
 usersController.getNextId = async (req, res) => {
   try {
     const max_result = await Users.aggregate([
-      { $group: { _id: null, max: { $max: "$id" } } }
+      { $group: { _id: null, max: { $max: "$id" } } },
     ]);
 
     let nextId;
@@ -146,7 +146,7 @@ usersController.getNextId = async (req, res) => {
 
     var data = {
       code: 200,
-      data: { id: nextId }
+      data: { id: nextId },
     };
     res.status(200).send(data);
   } catch (error) {
@@ -159,14 +159,14 @@ usersController.deleteUser = async (req, res) => {
   if (!req.params._id) {
     Fu;
     res.status(500).send({
-      message: "ID missing"
+      message: "ID missing",
     });
   }
   try {
     const _id = req.params._id;
 
     const result = await Users.findOneAndDelete({
-      _id: _id
+      _id: _id,
     });
     //   const result = await Inventory.updateOne({
     //         _id: _id
@@ -178,7 +178,7 @@ usersController.deleteUser = async (req, res) => {
     //     });
     res.status(200).send({
       code: 200,
-      message: "Deleted Successfully"
+      message: "Deleted Successfully",
     });
   } catch (error) {
     console.log("error", error);
@@ -191,7 +191,7 @@ usersController.uploadAvatar = async (req, res) => {
     const ext = path.extname(req.file.originalname);
     const updates = {
       avatar: filePath,
-      avatar_ext: ext
+      avatar_ext: ext,
     };
     runUpdateById(req.params.id, updates, res);
   } catch (error) {
@@ -202,7 +202,7 @@ usersController.uploadAvatar = async (req, res) => {
 usersController.updateUser = async (req, res) => {
   if (!req.params._id) {
     res.status(500).send({
-      message: "ID missing"
+      message: "ID missing",
     });
   }
   try {
@@ -219,14 +219,14 @@ async function runUpdate(_id, updates, res) {
   try {
     const result = await Users.updateOne(
       {
-        _id: _id
+        _id: _id,
       },
       {
-        $set: updates
+        $set: updates,
       },
       {
         upsert: true,
-        runValidators: true
+        runValidators: true,
       }
     );
 
@@ -234,17 +234,17 @@ async function runUpdate(_id, updates, res) {
       if (result.nModified == 1) {
         res.status(200).send({
           code: 200,
-          message: "Updated Successfully"
+          message: "Updated Successfully",
         });
       } else if (result.upserted) {
         res.status(200).send({
           code: 200,
-          message: "Created Successfully"
+          message: "Created Successfully",
         });
       } else {
         res.status(422).send({
           code: 422,
-          message: "Unprocessible Entity"
+          message: "Unprocessible Entity",
         });
       }
     }
@@ -257,32 +257,32 @@ async function runUpdateById(id, updates, res) {
   try {
     const result = await Users.updateOne(
       {
-        id: id
+        id: id,
       },
       {
-        $set: updates
+        $set: updates,
       },
       {
         upsert: true,
-        runValidators: true
+        runValidators: true,
       }
     );
 
     if (result.nModified == 1) {
       res.status(200).send({
         code: 200,
-        message: "Updated Successfully"
+        message: "Updated Successfully",
       });
     } else if (result.upserted) {
       res.status(200).send({
         code: 200,
-        message: "Created Successfully"
+        message: "Created Successfully",
       });
     } else {
       {
         res.status(200).send({
           code: 200,
-          message: "Task completed successfully"
+          message: "Task completed successfully",
         });
       }
     }

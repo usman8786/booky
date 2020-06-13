@@ -9,12 +9,12 @@ booksController.getAll = async (req, res) => {
     const length = 1000;
     books = await Books.paginate(merged, {
       offset: parseInt(start),
-      limit: parseInt(length)
+      limit: parseInt(length),
     });
     res.status(200).send({
       code: 200,
       message: "Successful",
-      data: books
+      data: books,
     });
   } catch (error) {
     console.log("error", error);
@@ -43,11 +43,11 @@ booksController.addBook = async (req, res) => {
   try {
     const body = req.body;
     const book = new Books(body);
-    const result = await book.save().then(r => {
+    const result = await book.save().then((r) => {
       res.status(200).send({
         result: r,
         code: 200,
-        message: "Feedback added successfully"
+        message: "Feedback added successfully",
       });
     });
   } catch (error) {
@@ -64,7 +64,7 @@ booksController.getBooksByUserId = async (req, res) => {
     res.status(200).send({
       code: 200,
       message: "Successfully find books against this user_id",
-      data: book
+      data: book,
     });
   } catch (error) {
     console.log("error", error);
@@ -80,7 +80,7 @@ booksController.getSingleBook = async (req, res) => {
     res.status(200).send({
       code: 200,
       message: "Successful",
-      data: book
+      data: book,
     });
   } catch (error) {
     console.log("error", error);
@@ -92,19 +92,19 @@ booksController.deleteBook = async (req, res) => {
   if (!req.params._id) {
     Fu;
     res.status(500).send({
-      message: "ID missing"
+      message: "ID missing",
     });
   }
   try {
     const _id = req.params._id;
 
     const result = await Books.findOneAndDelete({
-      _id: _id
+      _id: _id,
     });
 
     res.status(200).send({
       code: 200,
-      message: "Deleted Successfully"
+      message: "Deleted Successfully",
     });
   } catch (error) {
     console.log("error", error);
@@ -115,7 +115,7 @@ booksController.deleteBook = async (req, res) => {
 booksController.updateBook = async (req, res) => {
   if (!req.params._id) {
     res.status(500).send({
-      message: "ID missing"
+      message: "ID missing",
     });
   }
   try {
@@ -132,14 +132,14 @@ async function runUpdate(_id, updates, res) {
   try {
     const result = await Books.updateOne(
       {
-        _id: _id
+        _id: _id,
       },
       {
-        $set: updates
+        $set: updates,
       },
       {
         upsert: true,
-        runValidators: true
+        runValidators: true,
       }
     );
 
@@ -147,17 +147,17 @@ async function runUpdate(_id, updates, res) {
       if (result.nModified == 1) {
         res.status(200).send({
           code: 200,
-          message: "Updated Successfully"
+          message: "Updated Successfully",
         });
       } else if (result.upserted) {
         res.status(200).send({
           code: 200,
-          message: "Created Successfully"
+          message: "Created Successfully",
         });
       } else {
         res.status(422).send({
           code: 422,
-          message: "Unprocessible Entity"
+          message: "Unprocessible Entity",
         });
       }
     }
@@ -170,32 +170,32 @@ async function runUpdateById(id, updates, res) {
   try {
     const result = await books.updateOne(
       {
-        id: id
+        id: id,
       },
       {
-        $set: updates
+        $set: updates,
       },
       {
         upsert: true,
-        runValidators: true
+        runValidators: true,
       }
     );
 
     if (result.nModified == 1) {
       res.status(200).send({
         code: 200,
-        message: "Updated Successfully"
+        message: "Updated Successfully",
       });
     } else if (result.upserted) {
       res.status(200).send({
         code: 200,
-        message: "Created Successfully"
+        message: "Created Successfully",
       });
     } else {
       {
         res.status(200).send({
           code: 200,
-          message: "Task completed successfully"
+          message: "Task completed successfully",
         });
       }
     }
