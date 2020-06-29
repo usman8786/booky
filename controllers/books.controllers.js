@@ -112,6 +112,32 @@ booksController.deleteBook = async (req, res) => {
   }
 };
 
+booksController.deleteManyBooks = async (req, res) => {
+  if (!req.params._id) {
+    Fu;
+    res.status(500).send({
+      message: "ID missing",
+    });
+  }
+  try {
+    const query = req.body;
+    console.log("query", query);
+
+    const result = await Books.deleteMany({
+      query,
+    });
+    console.log("result", result);
+
+    res.status(200).send({
+      code: 200,
+      message: "Deleted Successfully",
+    });
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).send(error);
+  }
+};
+
 booksController.updateBook = async (req, res) => {
   if (!req.params._id) {
     res.status(500).send({
