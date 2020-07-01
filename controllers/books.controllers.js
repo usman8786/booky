@@ -113,24 +113,19 @@ booksController.deleteBook = async (req, res) => {
 };
 
 booksController.deleteManyBooks = async (req, res) => {
-  if (!req.params._id) {
-    Fu;
-    res.status(500).send({
-      message: "ID missing",
-    });
-  }
+  console.log("in");
+
   try {
-    const query = req.body;
+    const query = req.body.data;
     console.log("query", query);
 
-    const result = await Books.deleteMany({
-      query,
-    });
+    const result = await Books.deleteMany({ _id: { $in: query } });
     console.log("result", result);
 
     res.status(200).send({
       code: 200,
-      message: "Deleted Successfully",
+      message: `${result.deletedCount} Books Deleted Successfully`,
+      result: result,
     });
   } catch (error) {
     console.log("error", error);
