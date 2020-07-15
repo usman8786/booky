@@ -34,7 +34,7 @@ const User = new Schema({
   },
   verified: { type: Boolean, default: false },
   is_deleted: {
-    type: Number,
+    type: Boolean,
     default: false,
   },
 });

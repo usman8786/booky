@@ -10,8 +10,15 @@ const accessControls = require("./middleware/access-controls");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
-const io = require("socket.io")(server);
+app.use(express.static("public"));
+app.use(cors());
+// to support JSON-encoded bodies
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 // Requiring Routes
 const UsersRoutes = require("./routes/users.routes");
 const BooksRoutes = require("./routes/books.routes");
@@ -23,15 +30,6 @@ app.use(errorHandler);
 app.use(accessControls);
 app.use(errorMessage);
 // in case you want to serve images
-app.use(express.static("public"));
-app.use(cors());
-// to support JSON-encoded bodies
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
 
 // connection to mongoose
 const mongoCon = process.env.mongoCon;
@@ -46,22 +44,23 @@ fs.readdirSync(__dirname + "/models").forEach(function (file) {
 });
 
 // SOCKETS--------------//
-io.on("connection", (socket) => {
-  socket.on("disconnect", function () {
-    io.emit("users-changed", { user: socket.username, event: "left" });
-  });
+// const io = require("socket.io")(server);
+// io.on("connection", (socket) => {
+//   socket.on("disconnect", function () {
+//     io.emit("users-changed", { user: socket.username, event: "left" });
+//   });
 
-  socket.on("set-name", (name) => {
-    socket.username = name;
-    io.emit("users-changed", { user: name, event: "joined" });
-  });
-  const socketId = "user-1594722301081";
-  socket.on("send-message", (owner) => {
-    socket.ownername = owner;
-    console.log("owner", owner);
-    io.sockets.socket(socketId).emit("msg", socketId);
-  });
-});
+//   socket.on("set-name", (name) => {
+//     socket.username = name;
+//     io.emit("users-changed", { user: name, event: "joined" });
+//   });
+//   const socketId = "user-1594722301081";
+//   socket.on("send-message", (owner) => {
+//     socket.ownername = owner;
+//     console.log("owner", owner);
+//     io.sockets.socket(socketId).emit("msg", socketId);
+//   });
+// });
 
 //-----------------------------------------//
 app.get("/", function (req, res) {

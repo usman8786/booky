@@ -49,7 +49,7 @@ usersController.getSingleUser = async (req, res) => {
 usersController.registerUser = async (req, res) => {
   try {
     const body = req.body;
-
+    console.log("body", body);
     // there must be a password in body
 
     // we follow these 2 steps
