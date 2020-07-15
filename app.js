@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
+const io = require("socket.io")(server);
 // Requiring Routes
 const UsersRoutes = require("./routes/users.routes");
 const BooksRoutes = require("./routes/books.routes");
@@ -44,6 +45,25 @@ fs.readdirSync(__dirname + "/models").forEach(function (file) {
   require(__dirname + "/models/" + file);
 });
 
+// SOCKETS--------------//
+io.on("connection", (socket) => {
+  socket.on("disconnect", function () {
+    io.emit("users-changed", { user: socket.username, event: "left" });
+  });
+
+  socket.on("set-name", (name) => {
+    socket.username = name;
+    io.emit("users-changed", { user: name, event: "joined" });
+  });
+  const socketId = "user-1594722301081";
+  socket.on("send-message", (owner) => {
+    socket.ownername = owner;
+    console.log("owner", owner);
+    io.sockets.socket(socketId).emit("msg", socketId);
+  });
+});
+
+//-----------------------------------------//
 app.get("/", function (req, res) {
   res.status(200).send({
     message: "Express backend server",
