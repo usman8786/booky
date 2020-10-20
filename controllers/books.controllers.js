@@ -149,6 +149,26 @@ booksController.updateBook = async (req, res) => {
   }
 };
 
+booksController.updateManyBooks = async (req, res) => {
+  try {
+    const _ids = req.body.data.ids;
+    const updates = req.body.data.user_id;
+    const result = await Books.updateMany(
+      { _id: { $in: _ids } },
+      { $set: { user_id: updates } },
+      { multi: true }
+    );
+    res.status(200).send({
+      code: 200,
+      message: "Updated All Successfully",
+    });
+    console.log("result", result);
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).send(error);
+  }
+};
+
 async function runUpdate(_id, updates, res) {
   try {
     const result = await Books.updateOne(
