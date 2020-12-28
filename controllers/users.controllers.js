@@ -208,14 +208,60 @@ usersController.updateUser = async (req, res) => {
   try {
     const _id = req.params._id;
     let updates = req.body;
-    runUpdate(_id, updates, res);
+    if(updates.name){
+        runNameUpdate(_id, updates, res);
+    }
+    if(updates.email){
+      runEmailUpdate(_id, updates, res);
+  }
+    
   } catch (error) {
     console.log("error", error);
     return res.status(500).send(error);
   }
 };
-
-async function runUpdate(_id, updates, res) {
+async function runEmailUpdate(_id, updates, res) {
+  try {
+    const result = await Users.updateOne(
+      {
+        _id: _id,
+      },
+      {
+        $set: {email:updates.email, verifiedEmail:false},
+      },
+      {
+        upsert: true,
+        runValidators: true,
+      }
+    );
+    const  userData = await Users.find({_id:_id})
+    {
+      if (result.nModified == 1) {
+        res.status(200).send({
+          code: 200,
+          message: "Updated Successfully",
+          userData:userData
+        });
+      } else if (result.upserted) {
+        res.status(200).send({
+          code: 200,
+          message: "Created Successfully",
+          userData:userData
+        });
+      } else {
+        res.status(422).send({
+          code: 422,
+          message: "Unprocessible Entity",
+          userData:userData
+        });
+      }
+    }
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).send(error);
+  }
+}
+async function runNameUpdate(_id, updates, res) {
   try {
     const result = await Users.updateOne(
       {

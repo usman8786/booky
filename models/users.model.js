@@ -32,7 +32,7 @@ const User = new Schema({
   avatar_ext: {
     type: String,
   },
-  verified: { type: Boolean, default: false },
+  verifiedEmail: { type: Boolean, default: false },
   is_deleted: {
     type: Boolean,
     default: false,
