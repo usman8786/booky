@@ -44,23 +44,29 @@ fs.readdirSync(__dirname + "/models").forEach(function (file) {
 });
 
 // SOCKETS--------------//
-// const io = require("socket.io")(server);
-// io.on("connection", (socket) => {
-//   socket.on("disconnect", function () {
-//     io.emit("users-changed", { user: socket.username, event: "left" });
-//   });
+const io = require("socket.io")(server);
+let users = [];
 
-//   socket.on("set-name", (name) => {
-//     socket.username = name;
-//     io.emit("users-changed", { user: name, event: "joined" });
-//   });
-//   const socketId = "user-1594722301081";
-//   socket.on("send-message", (owner) => {
-//     socket.ownername = owner;
-//     console.log("owner", owner);
-//     io.sockets.socket(socketId).emit("msg", socketId);
-//   });
-// });
+io.on("connection",async (socket) => {
+  socket.on("new-connection", () => {
+    users.push(socket.id);
+    io.emit("users-changed", { user: socket.id, event: "joined" });
+    console.log("con", users);
+  });
+  socket.on("disconnect", function () {
+    const index = users.indexOf(socket.id);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
+    console.log("dis", users);
+    io.emit("users-changed",{ user: socket.id, event: "left" });
+ 
+  });
+     socket.on("private-message", (first) => {
+      console.log(first);
+      io.to(first.firstuser).emit('message', first.msg);
+    });
+});
 
 //-----------------------------------------//
 app.get("/", function (req, res) {
