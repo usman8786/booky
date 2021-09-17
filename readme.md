@@ -9,7 +9,7 @@ yarn install
 ```
 
 ```
-npm run dev
+nodemon app.js || node app.js
 ```
 
 Go to [locahost:3000](http://localhost:3000)
