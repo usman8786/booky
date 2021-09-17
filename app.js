@@ -44,29 +44,29 @@ fs.readdirSync(__dirname + "/models").forEach(function (file) {
 });
 
 // SOCKETS--------------//
-const io = require("socket.io")(server);
-let users = [];
+// const io = require("socket.io")(server);
+// let users = [];
 
-io.on("connection",async (socket) => {
-  socket.on("new-connection", () => {
-    users.push(socket.id);
-    io.emit("users-changed", { user: socket.id, event: "joined" });
-    console.log("con", users);
-  });
-  socket.on("disconnect", function () {
-    const index = users.indexOf(socket.id);
-    if (index > -1) {
-      users.splice(index, 1);
-    }
-    console.log("dis", users);
-    io.emit("users-changed",{ user: socket.id, event: "left" });
+// io.on("connection",async (socket) => {
+//   socket.on("new-connection", () => {
+//     users.push(socket.id);
+//     io.emit("users-changed", { user: socket.id, event: "joined" });
+//     console.log("con", users);
+//   });
+//   socket.on("disconnect", function () {
+//     const index = users.indexOf(socket.id);
+//     if (index > -1) {
+//       users.splice(index, 1);
+//     }
+//     console.log("dis", users);
+//     io.emit("users-changed",{ user: socket.id, event: "left" });
  
-  });
-     socket.on("private-message", (first) => {
-      console.log(first);
-      io.to(first.firstuser).emit('message', first.msg);
-    });
-});
+//   });
+//      socket.on("private-message", (first) => {
+//       console.log(first);
+//       io.to(first.firstuser).emit('message', first.msg);
+//     });
+// });
 
 //-----------------------------------------//
 app.get("/", function (req, res) {

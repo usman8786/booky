@@ -70,7 +70,7 @@ usersController.registerUser = async (req, res) => {
       process.env.JWT_KEY,
       { expiresIn: "7d" }
     );
-
+    console.log(token);
     res.send({
       message: "Signup successful",
       token: token,
