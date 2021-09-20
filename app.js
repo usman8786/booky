@@ -19,6 +19,11 @@ app.use(
     extended: true,
   })
 );
+app.get("/", function (req, res) {
+  res.status(200).send({
+    message: "Express backend server",
+  });
+});
 // Requiring Routes
 const UsersRoutes = require("./routes/users.routes");
 const BooksRoutes = require("./routes/books.routes");
@@ -69,11 +74,7 @@ fs.readdirSync(__dirname + "/models").forEach(function (file) {
 // });
 
 //-----------------------------------------//
-app.get("/", function (req, res) {
-  res.status(200).send({
-    message: "Express backend server",
-  });
-});
+
 
 app.set("port", process.env.PORT);
 server.listen(app.get("port"));
